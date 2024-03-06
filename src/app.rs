@@ -22,7 +22,9 @@ pub struct App {
 
     // Spinner
     pub is_spinning: bool,
-    pub spin_counter: usize,
+    pub position: f32,
+    pub speed: f32,
+    pub acceleration: f32,
     pub spin_winner: Option<Participant>,
 }
 
@@ -38,7 +40,9 @@ impl Default for App {
             all_participants: StatefulList::new(participants),
             all_winners: Vec::new(),
             is_spinning: false,
-            spin_counter: 0,
+            position: 0.0,
+            speed: 0.0,
+            acceleration: 0.0,
             spin_winner: None,
         }
     }
@@ -65,17 +69,26 @@ impl App {
             return;
         }
 
-        let participant_count = self.all_participants.items.len();
+        let participant_count = self.all_participants.items.len() as f32;
 
-        let min_spins = participant_count * 3;
-        let max_spins = participant_count * 6;
+        let min_acceleration = 0.1 / participant_count;
+        let max_acceleration = 0.5 / participant_count;
 
         let mut rng = rand::thread_rng();
-        let random_spins = rng.gen_range(min_spins..max_spins);
 
-        self.spin_counter = random_spins;
+        self.acceleration = rng.gen_range(min_acceleration..max_acceleration);
+        self.position = 0.0;
+        self.speed = 3.0;
         self.spin_winner = None;
         self.is_spinning = true;
+    }
+
+    pub fn apply_acceleration(&mut self) {
+        self.position += self.speed;
+        let i = self.position.floor() as usize;
+        self.all_participants.next(i);
+        self.position -= i as f32;
+        self.speed *= 1.0 - self.acceleration;
     }
 
     pub fn spin_round(&mut self) {
@@ -83,9 +96,8 @@ impl App {
             return;
         }
 
-        if self.spin_counter > 0 {
-            self.all_participants.next(1);
-            self.spin_counter -= 1;
+        if self.speed > 0.1 {
+            self.apply_acceleration();
             return;
         }
 
@@ -105,7 +117,7 @@ impl App {
 
     pub fn reset_spin(&mut self) {
         self.stop_spin();
-        self.spin_counter = 0;
+        self.speed = 0.0;
         self.spin_winner = None;
     }
 }

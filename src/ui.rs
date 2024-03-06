@@ -230,8 +230,8 @@ pub fn render_status<B: Backend>(app: &mut App, frame: &mut Frame<'_, B>, area: 
         status_text.extend(vec![
             Line::from(""),
             Line::from(vec![
-                Span::styled(format!("🎲 {}", app.spin_counter), styles::orange()),
-                Span::raw(" rotations left"),
+                Span::styled(format!("🎲 {}", app.speed), styles::orange()),
+                Span::raw(" Wheel speed"),
             ]),
         ]);
     }
