@@ -84,7 +84,7 @@ impl App {
         }
 
         if self.spin_counter > 0 {
-            self.all_participants.next();
+            self.all_participants.next(1);
             self.spin_counter -= 1;
             return;
         }
@@ -148,19 +148,13 @@ impl<T: std::clone::Clone> StatefulList<T> {
         }
     }
 
-    pub fn next(&mut self) {
+    pub fn next(&mut self, increment: usize) {
         if self.items.is_empty() {
             return;
         }
 
         let i = match self.state.selected() {
-            Some(i) => {
-                if i >= self.items.len() - 1 {
-                    0
-                } else {
-                    i + 1
-                }
-            }
+            Some(i) => (i + increment) % self.items.len(),
             None => 0,
         };
         self.state.select(Some(i));

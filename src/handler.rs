@@ -30,7 +30,7 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
         }
 
         KeyCode::Down => {
-            app.all_participants.next();
+            app.all_participants.next(1);
         }
 
         KeyCode::Esc => {
