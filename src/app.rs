@@ -71,8 +71,8 @@ impl App {
 
         let participant_count = self.all_participants.items.len() as f32;
 
-        let min_acceleration = 0.1 / participant_count;
-        let max_acceleration = 0.5 / participant_count;
+        let min_acceleration = 0.5 / participant_count;
+        let max_acceleration = 0.9 / participant_count;
 
         let mut rng = rand::thread_rng();
 
